@@ -73,7 +73,7 @@ export default {
   name: "Home",
   data() {
     return {
-      pizze: [], // Array za spremanje dohvaćenih pizza
+      pizze: [], 
       filter: {
         naziv: "",
         sastojak: "",
@@ -83,13 +83,13 @@ export default {
       novaPizza: {
         naziv: "",
         cijena: null,
-        sastojci: [], // Dodano za sastojke
-      }, // Objekt za novu pizzu
-      noviSastojak: "", // Za unos novog sastojka
-      narudzba: [], // Narudžbe
-      ukupnaCijena: 0, // Ukupna cijena narudžbe
-      errorMessage: "", // Poruka o grešci
-      successMessage: "", // Poruka o uspjehu
+        sastojci: [], 
+      }, 
+      noviSastojak: "", 
+      narudzba: [], 
+      ukupnaCijena: 0, 
+      errorMessage: "", 
+      successMessage: "", 
       kupac: {
         ime: "",
         adresa: "",
@@ -98,12 +98,9 @@ export default {
     };
   },
   computed: {
-  // Filterirana lista pizza
   filteredPizze() {
     return this.pizze.filter((pizza) => {
       const matchesNaziv = pizza.naziv.toLowerCase().includes(this.filter.naziv.toLowerCase());
-      
-      // Provjera sastojaka, ako sastojci nisu definirani, postavi prazan niz
       const matchesSastojak = this.filter.sastojak === "" || 
         (pizza.sastojci && Array.isArray(pizza.sastojci) && pizza.sastojci.some(sastojak => sastojak.toLowerCase().includes(this.filter.sastojak.toLowerCase())));
 
@@ -117,7 +114,7 @@ export default {
   methods: {
     async fetchPizze() {
       try {
-        const response = await axios.get("http://localhost:3010/pizze"); // Dohvaćanje pizza s backenda
+        const response = await axios.get("http://localhost:3010/pizze"); 
         this.pizze = response.data;
       } catch (error) {
         console.error("Greška prilikom dohvaćanja pizza:", error);
@@ -125,41 +122,34 @@ export default {
       }
     },
 
-    // Dodavanje sastojka u pizzu
-    
 
     async dodajPizzu() {
   // Logiraj podatke prije provjere
   console.log("Podaci prije provjere:", this.novaPizza); // Logiraj trenutnu vrijednost this.novaPizza
 
-  // Provjera svih potrebnih podataka
   if (!this.novaPizza.naziv || this.novaPizza.cijena <= 0 || !this.novaPizza.sastojciText || this.novaPizza.sastojciText.trim() === "") {
     this.errorMessage = "Morate unijeti naziv, cijenu i sastojke!";
-    this.successMessage = ""; // Resetiraj uspješne poruke
+    this.successMessage = ""; 
     console.log("Greška: Nedostaju obavezni podaci.");
     return;
   }
 
-  // Pretvaranje teksta u niz sastojaka
   const sastojci = this.novaPizza.sastojciText.split(",").map(sastojak => sastojak.trim()).filter(sastojak => sastojak !== "");
 
   if (sastojci.length === 0) {
     this.errorMessage = "Morate unijeti barem jedan sastojak!";
-    this.successMessage = ""; // Resetiraj uspješne poruke
+    this.successMessage = "";
     return;
   }
 
-  // Dodajemo sastojke u novaPizza objekt
   this.novaPizza.sastojci = sastojci;
 
-  // Logiraj podatke koje šaljemo na backend
   console.log("Podaci koji se šalju na backend:", {
     naziv: this.novaPizza.naziv,
     cijena: this.novaPizza.cijena,
     sastojci: this.novaPizza.sastojci
   });
 
-  // Slanje podataka na backend
   try {
     const response = await axios.post("http://localhost:3010/pizze", {
       naziv: this.novaPizza.naziv,
@@ -167,24 +157,23 @@ export default {
       sastojci: this.novaPizza.sastojci
     });
 
-    // Logiraj odgovor od backenda
     console.log("Odgovor od backenda:", response.data);
 
     this.successMessage = "Pizza uspješno dodana!";
-    this.errorMessage = ""; // Resetiraj greške
-    this.pizze.push(response.data); // Dodaj novu pizzu u lokalnu listu
-    this.novaPizza = { naziv: "", cijena: null, sastojciText: "" }; // Resetiraj obrazac
+    this.errorMessage = ""; 
+    this.pizze.push(response.data); 
+    this.novaPizza = { naziv: "", cijena: null, sastojciText: "" };
 
   } catch (error) {
-    // Ako dođe do greške, prikazujemo odgovarajuću poruku
+    
     if (error.response) {
-      console.log("Greška u odgovoru:", error.response.data); // Pomoć za debugiranje
+      console.log("Greška u odgovoru:", error.response.data); 
       this.errorMessage = error.response.data.error || "Došlo je do greške prilikom dodavanja pizze!";
     } else {
-      console.log("Greška u samom zahtjevu:", error.message); // Pomoć za debugiranje
+      console.log("Greška u samom zahtjevu:", error.message); 
       this.errorMessage = "Došlo je do greške prilikom dodavanja pizze!";
     }
-    this.successMessage = ""; // Resetiraj uspješne poruke
+    this.successMessage = ""; 
   }
 },
 
@@ -206,7 +195,7 @@ export default {
             this.narudzba.push({ ...pizza, kolicina: 1 });
         }
 
-        this.azurirajUkupnuCijenu();  // Ažuriraj cijenu odmah
+        this.azurirajUkupnuCijenu();  
     },
 
     ukloniIzNarudzbe(index) {
@@ -233,8 +222,8 @@ export default {
             const response = await axios.post("http://localhost:3010/narudzbe", narudzbaData);
             this.successMessage = "Narudžba uspješno poslana!";
             this.errorMessage = "";
-            this.narudzba = [];  // Očisti narudžbu nakon uspjeha
-            this.azurirajUkupnuCijenu();  // Osvježi ukupnu cijenu
+            this.narudzba = [];  
+            this.azurirajUkupnuCijenu();  
         } catch (error) {
             this.errorMessage = "Greška pri slanju narudžbe.";
             this.successMessage = "";
@@ -248,19 +237,19 @@ export default {
       if (this.successMessage) {
         setTimeout(() => {
           this.successMessage = "";
-        }, 3000); // Sakrij poruku nakon 3 sekunde
+        }, 3000); 
       }
     },
     errorMessage() {
       if (this.errorMessage) {
         setTimeout(() => {
           this.errorMessage = "";
-        }, 3000); // Sakrij poruku nakon 3 sekunde
+        }, 3000); 
       }
     },
   },
   created() {
-    this.fetchPizze(); // Automatski poziv metode kod mountanja komponente
+    this.fetchPizze(); 
   },
 };
 </script>
