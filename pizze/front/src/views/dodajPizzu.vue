@@ -24,8 +24,6 @@
       </div>
       <button type="submit">Dodaj pizzu</button>
     </form>
-
-    <!-- Prikaz poruka -->
     <div v-if="errorMessage" style="color: red; margin-top: 10px;">{{ errorMessage }}</div>
     <div v-if="successMessage" style="color: green; margin-top: 10px;">{{ successMessage }}</div>
   </div>
@@ -42,7 +40,7 @@ export default {
       novaPizza: {
         naziv: "",
         cijena: null,
-        sastojciText: "", // Za unos sastojaka u tekstualnom obliku
+        sastojciText: "", 
       },
       errorMessage: "",
       successMessage: "",
@@ -51,7 +49,6 @@ export default {
   methods: {
     
     async dodajPizzu() {
-  // Provjera svih potrebnih podataka
   if (
     !this.novaPizza.naziv ||
     this.novaPizza.cijena <= 0 ||
@@ -75,7 +72,6 @@ export default {
     return;
   }
 
-  // Kreiraj JSON za slanje podataka
   const podaci = {
     naziv: this.novaPizza.naziv,
     cijena: this.novaPizza.cijena,
@@ -94,7 +90,7 @@ export default {
 
     this.successMessage = "Pizza uspješno dodana!";
     this.errorMessage = "";
-    this.novaPizza = { naziv: "", cijena: null, sastojciText: "" }; // Resetiraj obrazac
+    this.novaPizza = { naziv: "", cijena: null, sastojciText: "" }; 
   } catch (error) {
     this.errorMessage = "Došlo je do greške prilikom dodavanja pizze!";
     this.successMessage = "";
